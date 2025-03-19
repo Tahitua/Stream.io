@@ -1,145 +1,183 @@
 <!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insertion de la clé d'accès</title>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: "Inter", sans-serif;
-        }
-    </style>
-</head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Insertion de la clé d'accès</h1>
-        <p class="text-gray-600 mb-4 text-center">Veuillez insérer la clé d'accès fournie pour activer votre produit.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insertion de la clé d'accès</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+        Insertion de la clé d'accès
+      </h1>
+      <p class="text-gray-600 mb-4 text-center">
+        Veuillez insérer la clé d'accès fournie pour activer votre produit.
+      </p>
 
-        <form id="access-key-form" class="space-y-4">
-            <div>
-                <label for="access-key" class="block text-gray-700 text-sm font-bold mb-2">Clé d'accès :</label>
-                <input type="text" id="access-key" name="access-key" placeholder="XXXX-XXXX-XXXX-XXXX" required autocomplete="off" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:text-gray-400">
-                <div id="access-key-error" class="text-red-500 text-xs italic" style="display: none">Veuillez entrer une clé d'accès valide.</div>
-            </div>
+      <form id="access-key-form" class="space-y-4">
+        <div>
+          <label
+            for="access-key"
+            class="block text-gray-700 text-sm font-bold mb-2"
+            >Clé d'accès :</label
+          >
+          <input
+            type="text"
+            id="access-key"
+            name="access-key"
+            placeholder="XXXX-XXXX-XXXX-XXXX"
+            required
+            autocomplete="off"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:text-gray-400"
+          />
+          <div
+            id="access-key-error"
+            class="text-red-500 text-xs italic"
+            style="display: none"
+          >
+            Veuillez entrer une clé d'accès valide.
+          </div>
+        </div>
 
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Activer</button>
-        </form>
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        >
+          Activer
+        </button>
+      </form>
 
-        <div id="success-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-6" role="alert" style="display: none">
-            <strong class="font-bold">Succès !</strong>
-            <span class="block sm:inline">Votre produit est maintenant activé.</span>
-        </div>
+      <div
+        id="success-message"
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-6"
+        role="alert"
+        style="display: none"
+      >
+        <strong class="font-bold">Succès !</strong>
+        <span class="block sm:inline"
+          >Votre produit est maintenant activé.</span
+        >
+      </div>
 
-        <div id="general-error-message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-6" role="alert" style="display: none">
-            <strong class="font-bold">Erreur !</strong>
-            <span class="block sm:inline">Une erreur s'est produite. Veuillez réessayer.</span>
-        </div>
+      <div
+        id="general-error-message"
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-6"
+        role="alert"
+        style="display: none"
+      >
+        <strong class="font-bold">Erreur !</strong>
+        <span class="block sm:inline"
+          >Une erreur s'est produite. Veuillez réessayer.</span
+        >
+      </div>
+      <div
+        id="loading-spinner"
+        class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto mt-4"
+        style="display: none"
+      ></div>
+    </div>
 
-        <div id="loading-spinner" class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto mt-4" style="display: none"></div>
-    </div>
+    <script>
+      // Désactiver le clic droit (moins important pour la sécurité, mais parfois demandé)
+      document.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+      });
 
-    <script>
-        // Désactiver le clic droit
-        document.addEventListener("contextmenu", function (event) {
-            event.preventDefault();
-        });
+      // Désactiver les raccourcis clavier pour modifier le code source
+      document.addEventListener("keydown", function (event) {
+        if (
+          (event.ctrlKey && event.shiftKey && event.key === "I") ||
+          (event.ctrlKey && event.key === "U") ||
+          event.key === "F12"
+        ) {
+          event.preventDefault();
+        }
+      });
 
-        // Désactiver les raccourcis clavier pour ouvrir les DevTools
-        document.addEventListener("keydown", function (event) {
-            if (
-                (event.ctrlKey && event.shiftKey && event.key === "I") ||
-                (event.ctrlKey && event.key === "U") ||
-                event.key === "F12" ||
-                (event.ctrlKey && event.shiftKey && event.key === "J")
-            ) {
-                event.preventDefault();
-                alert("Action interdite !");
-            }
-        });
+      const accessKeyForm = document.getElementById("access-key-form");
+      accessKeyForm.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-        // Détection de l'ouverture des outils de développement
-        setInterval(function () {
-            let devtools = /./;
-            devtools.toString = function () {
-                alert("Tentative de modification détectée ! La page sera bloquée.");
-                window.location.href = "about:blank";
-            };
-            console.log("%c", devtools);
-        }, 1000);
+        const accessKeyInput = document.getElementById("access-key");
+        const accessKey = accessKeyInput.value.trim();
+        const accessKeyError = document.getElementById("access-key-error");
+        const successMessage = document.getElementById("success-message");
+        const generalErrorMessage = document.getElementById(
+          "general-error-message"
+        );
+        const loadingSpinner = document.getElementById("loading-spinner");
 
-        // Détection de modifications du code source
-        (function () {
-            let script = document.createElement("script");
-            Object.defineProperty(script, "id", {
-                get: function () {
-                    alert("Modification détectée ! Accès bloqué.");
-                    window.location.href = "about:blank";
-                }
-            });
-            console.log(script);
-        })();
+        // Réinitialiser les messages
+        accessKeyError.style.display = "none";
+        generalErrorMessage.style.display = "none";
+        successMessage.style.display = "none";
 
-        const accessKeyForm = document.getElementById("access-key-form");
-        accessKeyForm.addEventListener("submit", function (event) {
-            event.preventDefault();
+        // Validation de la clé d'accès (format : XXXX-XXXX-XXXX-XXXX)
+        const keyFormat =
+          /^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/;
+        if (!keyFormat.test(accessKey)) {
+          accessKeyError.style.display = "block";
+          return;
+        }
 
-            const accessKeyInput = document.getElementById("access-key");
-            const accessKey = accessKeyInput.value.trim();
-            const accessKeyError = document.getElementById("access-key-error");
-            const successMessage = document.getElementById("success-message");
-            const generalErrorMessage = document.getElementById("general-error-message");
-            const loadingSpinner = document.getElementById("loading-spinner");
+        // Afficher le spinner
+        loadingSpinner.style.display = "block";
 
-            accessKeyError.style.display = "none";
-            generalErrorMessage.style.display = "none";
-            successMessage.style.display = "none";
-
-            const keyFormat = /^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/;
-            if (!keyFormat.test(accessKey)) {
-                accessKeyError.style.display = "block";
-                return;
-            }
-
-            loadingSpinner.style.display = "block";
-
-            fetch("/api/activer", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ accessKey: accessKey }),
-            })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Erreur lors de la communication avec le serveur.");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                loadingSpinner.style.display = "none";
-                if (data.success) {
-                    successMessage.style.display = "block";
-                    setTimeout(function () {
-                        window.location.href = "https://thtguns.glide.page";
-                    }, 1000);
-                } else {
-                    generalErrorMessage.style.display = "block";
-                    if (data.message) {
-                        generalErrorMessage.querySelector("span").textContent = data.message;
-                    }
-                }
-            })
-            .catch((error) => {
-                loadingSpinner.style.display = "none";
-                generalErrorMessage.style.display = "block";
-                generalErrorMessage.querySelector("span").textContent = "Erreur : " + error.message;
-                console.error("Erreur lors de l'activation :", error);
-            });
-        });
-    </script>
-</body>
-</html>
+        // **Important: Envoyer la clé au serveur pour validation et traitement sécurisé**
+        // **NE JAMAIS traiter la clé sensible entièrement côté client.**
+        fetch("/api/activer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ accessKey: accessKey }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                "Erreur lors de la communication avec le serveur."
+              );
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Cacher le spinner
+            loadingSpinner.style.display = "none";
+            if (data.success) {
+              successMessage.style.display = "block";
+              // Rediriger après un délai (plus sûr de le faire après une réponse du serveur)
+              setTimeout(function () {
+                window.location.href = "https://thtguns.glide.page";
+              }, 1000);
+            } else {
+              generalErrorMessage.style.display = "block";
+              if (data.message) {
+                generalErrorMessage.querySelector("span").textContent =
+                  data.message; // Afficher un message d'erreur spécifique du serveur
+              }
+            }
+          })
+          .catch((error) => {
+            // Cacher le spinner
+            loadingSpinner.style.display = "none";
+            generalErrorMessage.style.display = "block";
+            generalErrorMessage.querySelector("span").textContent =
+              "Erreur : " + error.message; // Afficher l'erreur de fetch
+            console.error("Erreur lors de l'activation :", error); // Important : Log l'erreur pour le débogage
+          });
+      });
+    </script>
+  </body>
+</html> 
