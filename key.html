@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Générateur de Clés d'Accès</title>
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100 flex justify-center items-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+                Générateur de Clés d'Accès
+            </h1>
+
+            <div class="mb-4">
+                <label
+                    for="key-format"
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    >Format de la clé :</label
+                >
+                <select
+                    id="key-format"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                >
+                    <option value="XXXX-XXXX-XXXX-XXXX">
+                        XXXX-XXXX-XXXX-XXXX
+                    </option>
+                    <option value="XXXX-XXXX-XXXX">XXXX-XXXX-XXXX</option>
+                    <option value="XXXXXXXX-XXXX-XXXXXXXX">
+                        XXXXXXXX-XXXX-XXXXXXXX
+                    </option>
+                    <option value="XXX-XXX-XXX-XXX">XXX-XXX-XXX-XXX</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label
+                    for="key-count"
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    >Nombre de clés à générer :</label
+                >
+                <input
+                    type="number"
+                    id="key-count"
+                    value="1"
+                    min="1"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+            </div>
+
+            <button
+                id="generate-keys"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mb-4"
+            >
+                Générer les clés
+            </button>
+
+            <div
+                id="generated-keys-container"
+                class="mt-4"
+                style="display: none"
+            >
+                <h2
+                    class="text-lg font-semibold text-gray-800 mb-2 text-center"
+                >
+                    Clés générées :
+                </h2>
+                <ul
+                    id="generated-keys-list"
+                    class="border rounded p-4 bg-gray-50"
+                ></ul>
+            </div>
+        </div>
+
+        <script>
+            const usedKeys = new Set(); // Utilisation d'un Set pour stocker les clés utilisées
+
+            document
+                .getElementById("generate-keys")
+                .addEventListener("click", function () {
+                    const keyFormat =
+                        document.getElementById("key-format").value;
+                    const keyCount = parseInt(
+                        document.getElementById("key-count").value,
+                    );
+                    const generatedKeysList = document.getElementById(
+                        "generated-keys-list",
+                    );
+                    const generatedKeysContainer = document.getElementById(
+                        "generated-keys-container",
+                    );
+
+                    generatedKeysList.innerHTML = ""; // Efface les clés précédemment générées
+                    generatedKeysContainer.style.display = "block"; // Affiche le conteneur
+
+                    for (let i = 0; i < keyCount; i++) {
+                        let key;
+                        do {
+                            key = generateKey(keyFormat);
+                        } while (usedKeys.has(key)); // Génère une nouvelle clé si elle a déjà été utilisée
+
+                        usedKeys.add(key); // Ajoute la nouvelle clé à l'ensemble des clés utilisées
+                        const listItem = document.createElement("li");
+                        listItem.textContent = key;
+                        listItem.classList.add(
+                            "mb-2",
+                            "text-gray-700",
+                            "font-mono",
+                        );
+                        generatedKeysList.appendChild(listItem);
+                    }
+                    // Stocker les clés générées dans le localStorage
+                    localStorage.setItem(
+                        "generatedKeys",
+                        JSON.stringify(Array.from(usedKeys)),
+                    );
+                    // Stocker les clés générées avec leur date d'expiration
+                    const keysWithExpiry = Array.from(usedKeys).map((key) => ({
+                        key: key,
+                        expiryDate: new Date(
+                            Date.now() + 24 * 60 * 60 * 1000,
+                        ).toISOString(), // Expiration dans 24 heures
+                    }));
+                    localStorage.setItem(
+                        "generatedKeysWithExpiry",
+                        JSON.stringify(keysWithExpiry),
+                    );
+                });
+
+            function generateKey(format) {
+                const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                let key = "";
+                let formatParts = format.split("-");
+
+                for (let i = 0; i < formatParts.length; i++) {
+                    const partLength = formatParts[i].length;
+                    for (let j = 0; j < partLength; j++) {
+                        const randomIndex = Math.floor(
+                            Math.random() * characters.length,
+                        );
+                        key += characters.charAt(randomIndex);
+                    }
+                    if (i < formatParts.length - 1) {
+                        key += "-";
+                    }
+                }
+                return key;
+            }
+
+            // Fonction pour vérifier si la clé est bloquée
+            function isKeyBlocked(key) {
+                const blockedKeys =
+                    JSON.parse(localStorage.getItem("blockedKeys")) || [];
+                return blockedKeys.includes(key);
+            }
+
+            // Fonction pour bloquer une clé
+            function blockKey(key) {
+                let blockedKeys =
+                    JSON.parse(localStorage.getItem("blockedKeys")) || [];
+                blockedKeys.push(key);
+                localStorage.setItem(
+                    "blockedKeys",
+                    JSON.stringify(blockedKeys),
+                );
+                alert(
+                    "Votre accès est bloqué. Veuillez contacter le développeur.",
+                );
+                window.location.href = "https://thtguns.glide.page"; // Redirige vers la page d'accueil
+            }
+
+            // Récupérer les clés générées depuis le localStorage au chargement de la page
+            window.onload = function () {
+                const storedKeys = localStorage.getItem("generatedKeys");
+                if (storedKeys) {
+                    const keysArray = JSON.parse(storedKeys);
+                    keysArray.forEach((key) => usedKeys.add(key));
+                }
+
+                const storedKeysWithExpiry = localStorage.getItem(
+                    "generatedKeysWithExpiry",
+                );
+                if (storedKeysWithExpiry) {
+                    const keysWithExpiry = JSON.parse(storedKeysWithExpiry);
+                    const now = new Date();
+                    keysWithExpiry.forEach((item) => {
+                        const key = item.key;
+                        const expiryDate = new Date(item.expiryDate);
+                        if (expiryDate > now) {
+                            usedKeys.add(key); // Ajouter la clé à l'ensemble des clés utilisées si elle n'a pas expiré
+                        } else {
+                            // Si la clé est expirée, la bloquer
+                            blockKey(key);
+                        }
+                    });
+                }
+
+                // Vérifier si la clé entrée par l'utilisateur est bloquée
+                const accessKeyInput = document.getElementById("access-key"); // Supposons que cet ID existe dans votre formulaire d'insertion de clé
+                if (accessKeyInput) {
+                    accessKeyInput.addEventListener("change", function () {
+                        const enteredKey = this.value.trim();
+                        if (isKeyBlocked(enteredKey)) {
+                            blockKey(enteredKey); // Bloquer la clé si elle est trouvée dans la liste des clés bloquées
+                        }
+                    });
+                }
+            };
+        </script>
+    </body>
+</html>
