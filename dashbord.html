@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tableau de Bord Utilisateur</title>
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100">
+        <div class="min-h-screen flex flex-col">
+            <header class="bg-white shadow-md py-4">
+                <div class="container mx-auto px-4">
+                    <h1 class="text-2xl font-semibold text-gray-800">
+                        Tableau de Bord Utilisateur
+                    </h1>
+                </div>
+            </header>
+
+            <main class="flex-grow container mx-auto px-4 py-6">
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                            Votre clé d'accès
+                        </h2>
+                        <div
+                            id="user-access-key"
+                            class="text-xl font-bold text-blue-500"
+                        >
+                            Non disponible
+                        </div>
+                        <p class="text-gray-500 text-sm mt-2">
+                            Statut :
+                            <span
+                                id="access-key-status"
+                                class="font-semibold text-gray-800"
+                                >Non vérifié</span
+                            >
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                            Date de création de la clé
+                        </h2>
+                        <div
+                            id="key-creation-date"
+                            class="text-xl font-bold text-green-500"
+                        >
+                            Non disponible
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                            Date d'expiration de la clé
+                        </h2>
+                        <div
+                            id="key-expiry-date"
+                            class="text-xl font-bold text-purple-500"
+                        >
+                            Non disponible
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">
+                            Nombre de connexions
+                        </h2>
+                        <div
+                            id="login-count"
+                            class="text-xl font-bold text-orange-500"
+                        >
+                            0
+                        </div>
+                        <p class="text-gray-500 text-sm mt-2">
+                            <span class="text-green-500"></span>
+                        </p>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="bg-gray-100 text-gray-600 py-4">
+                <div class="container mx-auto px-4 text-center">
+                    © 2024 Mon Tableau de Bord Utilisateur. Tous droits
+                    réservés.
+                </div>
+            </footer>
+        </div>
+
+        <script>
+            // Récupérer les informations de l'utilisateur depuis le localStorage
+            const userAccessKeyElement =
+                document.getElementById("user-access-key");
+            const keyCreationDateElement =
+                document.getElementById("key-creation-date");
+            const keyExpiryDateElement =
+                document.getElementById("key-expiry-date");
+            const accessKeyStatusElement =
+                document.getElementById("access-key-status");
+            const loginCountElement = document.getElementById("login-count");
+
+            // Récupérer les informations de la clé depuis le localStorage
+            const storedKeysWithExpiry = localStorage.getItem(
+                "generatedKeysWithExpiry",
+            );
+            const storedLoginCounts = localStorage.getItem("loginCounts");
+            let userKey = null;
+            let keyCreationDate = null;
+            let keyExpiryDate = null;
+            let loginCount = 0;
+
+            if (storedKeysWithExpiry) {
+                const keysWithExpiry = JSON.parse(storedKeysWithExpiry);
+                // Supposons que l'utilisateur actuellement connecté est celui qui a la première clé valide
+                if (keysWithExpiry.length > 0) {
+                    userKey = keysWithExpiry[0].key;
+                    keyExpiryDate = new Date(keysWithExpiry[0].expiryDate);
+                    keyCreationDate = new Date(Date.now()); // La date de création est maintenant la date d'attribution de la clé.
+
+                    if (storedLoginCounts) {
+                        const loginCounts = JSON.parse(storedLoginCounts);
+                        if (loginCounts[userKey]) {
+                            loginCount = loginCounts[userKey];
+                        }
+                    }
+                }
+            }
+
+            // Mettre à jour les éléments HTML avec les informations de l'utilisateur
+            function updateDashboard() {
+                if (userKey) {
+                    userAccessKeyElement.textContent = userKey;
+                    keyCreationDateElement.textContent = keyCreationDate
+                        ? keyCreationDate.toLocaleDateString()
+                        : "Non disponible";
+                    keyExpiryDateElement.textContent = keyExpiryDate
+                        ? keyExpiryDate.toLocaleDateString()
+                        : "Non disponible";
+                    accessKeyStatusElement.textContent = "Active";
+                    accessKeyStatusElement.classList.remove("text-gray-800");
+                    accessKeyStatusElement.classList.add("text-green-500");
+                    loginCountElement.textContent = loginCount;
+                } else {
+                    userAccessKeyElement.textContent = "Non disponible";
+                    keyCreationDateElement.textContent = "Non disponible";
+                    keyExpiryDateElement.textContent = "Non disponible";
+                    accessKeyStatusElement.textContent = "Non vérifié";
+                    loginCountElement.textContent = loginCount;
+                }
+            }
+
+            // Mettre à jour le tableau de bord au chargement de la page
+            updateDashboard();
+
+            // Fonction pour mettre à jour le nombre de connexions (à appeler lors de chaque connexion de l'utilisateur)
+            function updateLoginCount(key) {
+                let loginCounts =
+                    JSON.parse(localStorage.getItem("loginCounts")) || {};
+                loginCounts[key] = (loginCounts[key] || 0) + 1;
+                localStorage.setItem(
+                    "loginCounts",
+                    JSON.stringify(loginCounts),
+                );
+
+                // Mettre à jour l'affichage du nombre de connexions
+
+                const loginCountElement =
+                    document.getElementById("login-count");
+                if (loginCountElement) {
+                    loginCountElement.textContent = loginCounts[key];
+                }
+            }
+
+            // Exemple d'appel de la fonction updateLoginCount (à adapter à votre système d'authentification)
+            // Supposons que vous ayez une variable 'currentUserKey' contenant la clé de l'utilisateur connecté
+            if (userKey) {
+                updateLoginCount(userKey); // Appeler la fonction avec la clé de l'utilisateur
+            }
+        </script>
+    </body>
+</html>
