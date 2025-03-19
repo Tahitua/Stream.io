@@ -185,24 +185,26 @@
                         "pagination-container"
                     );
                     const buttons = paginationContainer.querySelectorAll("button");
-                    buttons.forEach((button, index) => {
-                        if (index + 1 === currentPage) {
-                            button.classList.add("active");
+                    if (buttons.length > 0) {
+                        buttons.forEach((button, index) => {
+                            if (index + 1 === currentPage) {
+                                button.classList.add("active");
+                            } else {
+                                button.classList.remove("active");
+                            }
+                        });
+                        const firstPageButton = buttons[0];
+                        const lastPageButton = buttons[buttons.length - 1];
+                        if (currentPage === 1) {
+                            firstPageButton.disabled = true;
                         } else {
-                            button.classList.remove("active");
+                            firstPageButton.disabled = false;
                         }
-                    });
-                    const firstPageButton = buttons[0];
-                    const lastPageButton = buttons[buttons.length - 1];
-                    if (currentPage === 1) {
-                        firstPageButton.disabled = true;
-                    } else {
-                        firstPageButton.disabled = false;
-                    }
-                    if (currentPage === buttons.length) {
-                        lastPageButton.disabled = true;
-                    } else {
-                        lastPageButton.disabled = false;
+                        if (currentPage === buttons.length) {
+                            lastPageButton.disabled = true;
+                        } else {
+                            lastPageButton.disabled = false;
+                        }
                     }
                 }
 
